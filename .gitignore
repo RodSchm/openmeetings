@@ -16,3 +16,4 @@ openmeetings-server/web-server
 
 # OSX files
 .DS_Store
+/.metadata/
