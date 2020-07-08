@@ -66,6 +66,7 @@ public class OpenmeetingsVariables {
 	public static final String CONFIG_SMTP_PASS = "mail.smtp.pass";
 	public static final String CONFIG_SMTP_SYSTEM_EMAIL = "mail.smtp.system.email";
 	public static final String CONFIG_SMTP_TLS = "mail.smtp.starttls.enable";
+	public static final String CONFIG_SMTP_SSL = "mail.smtp.ssl.enable";
 	public static final String CONFIG_SMTP_TIMEOUT_CON = "mail.smtp.connection.timeout";
 	public static final String CONFIG_SMTP_TIMEOUT = "mail.smtp.timeout";
 	public static final String CONFIG_PATH_IMAGEMAGIC = "path.imagemagick";
@@ -105,6 +106,7 @@ public class OpenmeetingsVariables {
 	public static final String CONFIG_CSP_MEDIA = "header.csp.media";
 	public static final String CONFIG_CSP_SCRIPT = "header.csp.script";
 	public static final String CONFIG_CSP_STYLE = "header.csp.style";
+	public static final String CONFIG_CSP_ENABLED = "header.csp.enabled";
 
 	public static final int RECENT_ROOMS_COUNT = 5;
 	public static final int USER_LOGIN_MINIMUM_LENGTH = 4;
@@ -117,7 +119,7 @@ public class OpenmeetingsVariables {
 	public static final String DEFAULT_SIP_CONTEXT = "rooms";
 	public static final String DEFAULT_CSP_FONT = "https://fonts.gstatic.com";
 	public static final String DEFAULT_CSP_STYLE = "https://fonts.googleapis.com/css";
-	public static final String DEFAULT_CSP_IMAGE = "data:";
+	public static final String DEFAULT_CSP_DATA = SELF.getValue() + ",data:";
 
 	private static String cryptClassName = null;
 	private static String wicketApplicationName = null;
@@ -152,10 +154,20 @@ public class OpenmeetingsVariables {
 	private static boolean myRoomsEnabled = true;
 	private static String cspFontSrc = DEFAULT_CSP_FONT;
 	private static String cspFrameSrc = SELF.getValue();
-	private static String cspImageSrc = DEFAULT_CSP_IMAGE;
-	private static String cspMediaSrc = SELF.getValue();
+	private static String cspImageSrc = DEFAULT_CSP_DATA;
+	private static String cspMediaSrc = DEFAULT_CSP_DATA;
 	private static String cspScriptSrc = STRICT_DYNAMIC.getValue();
 	private static String cspStyleSrc = DEFAULT_CSP_STYLE;
+	private static String smtpServer;
+	private static int smtpPort;
+	private static boolean smtpUseTls;
+	private static boolean smtpUseSsl;
+	private static String smtpUser;
+	private static String smtpPass;
+	private static int smtpTimeOut;
+	private static int smtpConnectionTimeOut;
+	private static String mailFrom;
+	private static boolean mailAddReplyTo;
 
 	private OpenmeetingsVariables() {}
 
@@ -457,5 +469,86 @@ public class OpenmeetingsVariables {
 
 	public static void setCspStyleSrc(String src) {
 		cspStyleSrc = src;
+	}
+
+
+	public static String getSmtpServer() {
+		return smtpServer;
+	}
+
+	public static void setSmtpServer(String server) {
+		smtpServer = server;
+	}
+
+	public static int getSmtpPort() {
+		return smtpPort;
+	}
+
+	public static void setSmtpPort(int port) {
+		smtpPort = port;
+	}
+
+	public static boolean isSmtpUseTls() {
+		return smtpUseTls;
+	}
+
+	public static void setSmtpUseTls(boolean useTls) {
+		smtpUseTls = useTls;
+	}
+
+	public static boolean isSmtpUseSsl() {
+		return smtpUseSsl;
+	}
+
+	public static void setSmtpUseSsl(boolean useSsl) {
+		smtpUseSsl = useSsl;
+	}
+
+	public static String getSmtpUser() {
+		return smtpUser;
+	}
+
+	public static void setSmtpUser(String user) {
+		smtpUser = user;
+	}
+
+	public static String getSmtpPass() {
+		return smtpPass;
+	}
+
+	public static void setSmtpPass(String pass) {
+		smtpPass = pass;
+	}
+
+	public static int getSmtpTimeOut() {
+		return smtpTimeOut;
+	}
+
+	public static void setSmtpTimeOut(int timeOut) {
+		smtpTimeOut = timeOut;
+	}
+
+	public static int getSmtpConnectionTimeOut() {
+		return smtpConnectionTimeOut;
+	}
+
+	public static void setSmtpConnectionTimeOut(int timeOut) {
+		smtpConnectionTimeOut = timeOut;
+	}
+
+	public static String getMailFrom() {
+		return mailFrom;
+	}
+
+	public static void setMailFrom(String from) {
+		mailFrom = from;
+	}
+
+	public static boolean isMailAddReplyTo() {
+		return mailAddReplyTo;
+	}
+
+	public static void setMailAddReplyTo(boolean addReplyTo) {
+		mailAddReplyTo = addReplyTo;
 	}
 }

@@ -19,15 +19,17 @@
 package org.apache.openmeetings.web.room;
 
 import static java.time.Duration.ZERO;
+import static org.apache.openmeetings.core.remote.KurentoHandler.activityAllowed;
 import static org.apache.openmeetings.core.util.ChatWebSocketHelper.ID_USER_PREFIX;
+import static org.apache.openmeetings.util.OmFileHelper.EXTENSION_PDF;
 import static org.apache.openmeetings.web.app.WebSession.getDateFormat;
 import static org.apache.openmeetings.web.app.WebSession.getUserId;
 import static org.apache.openmeetings.web.room.wb.InterviewWbPanel.INTERVIEWWB_JS_REFERENCE;
 import static org.apache.openmeetings.web.room.wb.WbPanel.WB_JS_REFERENCE;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
@@ -68,6 +70,7 @@ import org.apache.openmeetings.web.room.wb.AbstractWbPanel;
 import org.apache.openmeetings.web.room.wb.InterviewWbPanel;
 import org.apache.openmeetings.web.room.wb.WbAction;
 import org.apache.openmeetings.web.room.wb.WbPanel;
+import org.apache.openmeetings.web.util.ExtendedClientProperties;
 import org.apache.openmeetings.web.util.TouchPunchResourceReference;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -93,9 +96,8 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.ResourceStreamResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.resource.AbstractResourceStream;
+import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.apache.wicket.util.string.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +186,7 @@ public class RoomPanel extends BasePanel {
 				}
 			}
 			if (streams.length() > 0) {
-				sb.append("VideoManager.play(").append(streams).append(", ").append(kHandler.getTurnServers()).append(");");
+				sb.append("VideoManager.play(").append(streams).append(", ").append(kHandler.getTurnServers(getClient())).append(");");
 			}
 			if (interview && streamProcessor.recordingAllowed(getClient())) {
 				sb.append("WbArea.setRecEnabled(true);");
@@ -201,30 +203,19 @@ public class RoomPanel extends BasePanel {
 	private RoomMenuPanel menu;
 	private RoomSidebar sidebar;
 	private final AbstractWbPanel wb;
-	private byte[] pdfWb;
+	private String fuid;
+	private String ftype;
 	private final AjaxDownloadBehavior download = new AjaxDownloadBehavior(new ResourceStreamResource() {
 		private static final long serialVersionUID = 1L;
 
 		{
 			setCacheDuration(ZERO);
-			setFileName("whiteboard.pdf");
 		}
 
 		@Override
 		protected IResourceStream getResourceStream(Attributes attributes) {
-			return new AbstractResourceStream() {
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public InputStream getInputStream() throws ResourceStreamNotFoundException {
-					return new ByteArrayInputStream(pdfWb);
-				}
-
-				@Override
-				public void close() throws IOException {
-					//no-op
-				}
-			};
+			setFileName(EXTENSION_PDF.equals(ftype) ? "whiteboard.pdf" : "slide.png");
+			return new FileResourceStream(Paths.get(System.getProperty("java.io.tmpdir"), fuid).toFile());
 		}
 	}) {
 		private static final long serialVersionUID = 1L;
@@ -232,10 +223,17 @@ public class RoomPanel extends BasePanel {
 		@Override
 		protected void onDownloadCompleted(AjaxRequestTarget target) {
 			super.onDownloadCompleted(target);
-			pdfWb = null;
+			try {
+				Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir"), fuid));
+			} catch (IOException e) {
+				log.error("unexcepted error while clean-up", e);
+			}
+			fuid = null;
+			ftype = null;
 		}
 	};
 	Component eventDetail = new WebMarkupContainer(EVENT_DETAILS_ID).setVisible(false);
+	private boolean avInited = false;
 
 	@SpringBean
 	private ClientManager cm;
@@ -259,8 +257,9 @@ public class RoomPanel extends BasePanel {
 		this.wb = interview ? new InterviewWbPanel("whiteboard", this) : new WbPanel("whiteboard", this);
 	}
 
-	public void startDownload(IPartialPageRequestHandler handler, byte[] bb) {
-		pdfWb = bb;
+	public void startDownload(IPartialPageRequestHandler handler, String type, String fuid) {
+		this.fuid = fuid;
+		ftype = type;
 		download.initiate(handler);
 	}
 
@@ -771,6 +770,28 @@ public class RoomPanel extends BasePanel {
 				wb.processWbAction(a, o.optJSONObject("data"), handler);
 			} else if ("room".equals(type)) {
 				sidebar.roomAction(handler, o);
+			} else if ("av".equals(type)) {
+				ExtendedClientProperties cp = WebSession.get().getExtendedProperties();
+				Client c = cp.setSettings(o.optJSONObject("settings")).update(getClient());
+				if (!avInited) {
+					avInited = true;
+					if (Room.Type.CONFERENCE == r.getType()) {
+						if (!activityAllowed(c, Client.Activity.AUDIO, c.getRoom())) {
+							c.allow(Room.Right.AUDIO);
+						}
+						if (!c.getRoom().isAudioOnly() && !activityAllowed(c, Client.Activity.VIDEO, c.getRoom())) {
+							c.allow(Room.Right.VIDEO);
+						}
+						streamProcessor.toggleActivity(c, c.getRoom().isAudioOnly()
+								? Client.Activity.AUDIO
+								: Client.Activity.AUDIO_VIDEO);
+					}
+				}
+				c.getCamStreams().forEach(sd -> {
+					sd.setWidth(c.getWidth());
+					sd.setHeight(c.getHeight());
+				});
+				broadcast(c);
 			}
 		}
 	}

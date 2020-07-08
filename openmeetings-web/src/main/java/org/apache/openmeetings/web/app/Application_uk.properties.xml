@@ -85,7 +85,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="124"><![CDATA[На головну]]></entry>
 	<entry key="125"><![CDATA[Користувачі]]></entry>
 	<entry key="126"><![CDATA[Групи]]></entry>
-	<entry key="131"><![CDATA[Вхід]]></entry>
 	<entry key="135"><![CDATA[Ім'я]]></entry>
 	<entry key="136"><![CDATA[Прізвище]]></entry>
 	<entry key="138"><![CDATA[Дата народження]]></entry>
@@ -104,7 +103,7 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="177"><![CDATA[Користувач]]></entry>
 	<entry key="178"><![CDATA[Додати користувача]]></entry>
 	<entry key="186"><![CDATA[Кімнати для конференцій]]></entry>
-	<entry key="187"><![CDATA[Кімнати для конференцій]]></entry>
+
 	<entry key="188"><![CDATA[Ідент. №]]></entry>
 	<entry key="190"><![CDATA[Публічно]]></entry>
 	<entry key="196"><![CDATA[Коментар]]></entry>
@@ -201,7 +200,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="505"><![CDATA[Якщо ви має проблему з даним посилання, будь-ласка скопіюйте його і вставте в свій браузер:]]></entry>
 	<entry key="506"><![CDATA[{0} SignUp]]></entry>
 	<entry key="507"><![CDATA[Ваші дані користувача:]]></entry>
-	<entry key="510"><![CDATA[E-mail:]]></entry>
 	<entry key="511"><![CDATA[Команда {0}]]></entry>
 	<entry key="512"><![CDATA[{0} Sign-Up]]></entry>
 	<entry key="513"><![CDATA[{0} - Відновити пароль]]></entry>
@@ -221,9 +219,9 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="547"><![CDATA[y]]></entry>
 	<entry key="548"><![CDATA[ось y]]></entry>
 	<entry key="549"><![CDATA[w]]></entry>
-	<entry key="550"><![CDATA[ширина]]></entry>
+
 	<entry key="551"><![CDATA[h]]></entry>
-	<entry key="552"><![CDATA[высота]]></entry>
+
 	<entry key="553"><![CDATA[Змінити прозорість]]></entry>
 	<entry key="556"><![CDATA[Втрачено з'єднання з сервером. Завантажте заново додаток, або перевірте вашу мережу.]]></entry>
 	<entry key="557"><![CDATA[Указатель]]></entry>
@@ -271,17 +269,11 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="713"><![CDATA[Ви впевнені, що хочете видалити цей пункт?]]></entry>
 	<entry key="714"><![CDATA[Пошук]]></entry>
 	<entry key="730"><![CDATA[Свой екрану]]></entry>
-	<entry key="731"><![CDATA[Натисніть, щоб відкрити загальний доступ до вашого екрану]]></entry>
 	<entry key="732"><![CDATA[Відкрити доступ]]></entry>
 	<entry key="733"><![CDATA[Припинити доступ]]></entry>
 	<entry key="734"><![CDATA[Оберіть область екрана]]></entry>
-	<entry key="735"><![CDATA[Змінити ширину]]></entry>
-	<entry key="737"><![CDATA[Змінити висоту]]></entry>
-	<entry key="738"><![CDATA[Зсув X]]></entry>
-	<entry key="739"><![CDATA[Зміщення Y]]></entry>
-	<entry key="740"><![CDATA[Ширина:]]></entry>
-	<entry key="741"><![CDATA[Висота:]]></entry>
-	<entry key="742"><![CDATA[З'єднання завершено сервером]]></entry>
+	<entry key="740"><![CDATA[Ширина]]></entry>
+	<entry key="741"><![CDATA[Висота]]></entry>
 	<entry key="753"><![CDATA[Перезавантажити]]></entry>
 	<entry key="758"><![CDATA[Перевірте установки мікрофона та камери перед тим, як увійти в кімнату. Запишіть 5-секундне тестове відео. Після запису можна програти відео і перевірити якість зображення і звуку.]]></entry>
 	<entry key="764"><![CDATA[ПРОГРАТИ]]></entry>
@@ -303,7 +295,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="786"><![CDATA[Подати заявку на доступ до камери і мікрофону]]></entry>
 	<entry key="788"><![CDATA[СТАРТ]]></entry>
 	<entry key="792"><![CDATA[Кімнати]]></entry>
-	<entry key="793"><![CDATA[Виберіть кімнату для наради]]></entry>
 	<entry key="797"><![CDATA[Попередження]]></entry>
 	<entry key="799"><![CDATA[День]]></entry>
 	<entry key="800"><![CDATA[Тиждень]]></entry>
@@ -318,7 +309,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="832"><![CDATA[Ви впевнені?]]></entry>
 	<entry key="833"><![CDATA[Ви дійсно хочете видалити запис?]]></entry>
 	<entry key="843"><![CDATA[Властивості Знаряддя]]></entry>
-	<entry key="844"><![CDATA[Показувати позицію миші глядачам]]></entry>
 	<entry key="848"><![CDATA[Дивитися екран]]></entry>
 	<entry key="850"><![CDATA[хоче зробити екран загальним. Хочете бачити його?]]></entry>
 	<entry key="860"><![CDATA[Мої записи]]></entry>
@@ -326,11 +316,8 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="864"><![CDATA[Довжина]]></entry>
 	<entry key="865"><![CDATA[Дата]]></entry>
 	<entry key="867"><![CDATA[ГРАТИ]]></entry>
-	<entry key="869"><![CDATA[Запис]]></entry>
-	<entry key="870"><![CDATA[Ви можете записувати і робити екран загальним одночасно. Щоб зробити екран загальним, натисніть кнопку "Відкрити доступ" зверху. Щоб тільки записувати сесію, натисніть "Почати запис".]]></entry>
 	<entry key="871"><![CDATA[Почати запис]]></entry>
 	<entry key="872"><![CDATA[Зупинити запис]]></entry>
-	<entry key="878"><![CDATA[Закрити доступ]]></entry>
 	<entry key="879"><![CDATA[Дозволити питання]]></entry>
 	<entry key="880"><![CDATA[Вимкніть, щоб учасники в кімнаті вам не заважали.]]></entry>
 	<entry key="881"><![CDATA[Права]]></entry>
@@ -349,10 +336,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1076"><![CDATA[Тільки з аудіо]]></entry>
 	<entry key="1077"><![CDATA[Встановіть цей прапорець, і корист-чи будуть мати тільки звук опції без відео в кімнаті для нарад. Корисно для зменшення навантаження мережі.]]></entry>
 	<entry key="1089"><![CDATA[Якість загального доступу:]]></entry>
-	<entry key="1090"><![CDATA[Дуже високу якість]]></entry>
-	<entry key="1091"><![CDATA[Висока якість]]></entry>
-	<entry key="1092"><![CDATA[Середня якість]]></entry>
-	<entry key="1093"><![CDATA[Низька якість]]></entry>
 	<entry key="1098"><![CDATA[Вебінар вже закритий, ви будете перенаправлені в]]></entry>
 	<entry key="1099"><![CDATA[Закрити кімнату]]></entry>
 	<entry key="1100"><![CDATA[Переадресація]]></entry>
@@ -380,8 +363,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1143"><![CDATA[Таймзона]]></entry>
 	<entry key="1146"><![CDATA[Опис]]></entry>
 	<entry key="1147"><![CDATA[Створено]]></entry>
-	<entry key="1148"><![CDATA[Повідомлення в ТЗ]]></entry>
-	<entry key="1149"><![CDATA[Увімкніть "Повідомлення в таймзоне", щоб попросити користувача змінити свій профайл при слід. логін.]]></entry>
 	<entry key="1151"><![CDATA[Нова конференція {0}:]]></entry>
 	<entry key="1152"><![CDATA[Деталі:]]></entry>
 	<entry key="1153"><![CDATA[Старт:]]></entry>
@@ -418,7 +399,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1196"><![CDATA[Ваш список контактів]]></entry>
 	<entry key="1198"><![CDATA[підтвердив вас як контакт!]]></entry>
 	<entry key="1202"><![CDATA[From]]></entry>
-	<entry key="1205"><![CDATA[]]></entry>
 	<entry key="1206"><![CDATA[Повідомлення]]></entry>
 	<entry key="1207"><![CDATA[Новий мейл]]></entry>
 	<entry key="1208"><![CDATA[Натисніть, щоб написати повідомлення вашому контакту]]></entry>
@@ -449,7 +429,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1262"><![CDATA[Видалити теку]]></entry>
 	<entry key="1268"><![CDATA[Користувач не дав спільного доступу до його персональних даних.]]></entry>
 	<entry key="1269"><![CDATA[Користувач дозволив доступ до своїх персональних даних лише контактів.]]></entry>
-	<entry key="1282"><![CDATA[Увійти в кімнату]]></entry>
 	<entry key="1287"><![CDATA[Виберіть ваш нік]]></entry>
 	<entry key="1296"><![CDATA[Записаний з]]></entry>
 	<entry key="1301"><![CDATA[Нове приватне повідомлення:]]></entry>
@@ -497,19 +476,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1459"><![CDATA[Керувати мітками і текстом]]></entry>
 	<entry key="1460"><![CDATA[Конфігурувати LDAP і ADS]]></entry>
 	<entry key="1461"><![CDATA[Експорт/імпорт системних бекапів]]></entry>
-	<entry key="1465"><![CDATA[Опублікувати]]></entry>
-	<entry key="1466"><![CDATA[Почати публікацію]]></entry>
-	<entry key="1467"><![CDATA[Зупинити]]></entry>
-	<entry key="1468"><![CDATA[Сервер публікації]]></entry>
-	<entry key="1469"><![CDATA[Домен публікації]]></entry>
-	<entry key="1470"><![CDATA[Ім'я публікації]]></entry>
-	<entry key="1471"><![CDATA[Зменшувати ширину загального екрану при переміщенні його вліво]]></entry>
-	<entry key="1472"><![CDATA[Зменшувати висоту загального екрану при переміщенні його вниз]]></entry>
-	<entry key="1473"><![CDATA[Зменшувати зміщення x загального екрану при збільшенні ширини]]></entry>
-	<entry key="1474"><![CDATA[Зменшувати зміщення y загального екрану при збільшенні його висоти]]></entry>
-	<entry key="1475"><![CDATA[Налаштування для трансляції відео конференції на інші сервіси:]]></entry>
-	<entry key="1476"><![CDATA[Будь ласка, зробіть екран спільним, щоб його опублікувати]]></entry>
-	<entry key="1477"><![CDATA[Для того, щоб почати запис, необхідно дозвіл модератора]]></entry>
 	<entry key="1479"><![CDATA[Завантажити новий файл]]></entry>
 	<entry key="1480"><![CDATA[Відкрити налаштування загального екрану в новому вікні]]></entry>
 	<entry key="1481"><![CDATA[Запитувати модератора]]></entry>
@@ -561,8 +527,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1571"><![CDATA[OAuth2]]></entry>
 	<entry key="1572"><![CDATA[Конфігурувати OAuth2]]></entry>
 	<entry key="1575"><![CDATA[URL значка]]></entry>
-	<entry key="1576"><![CDATA[client_id]]></entry>
-	<entry key="1577"><![CDATA[client_secret]]></entry>
 	<entry key="1578"><![CDATA[URL запиту ключа]]></entry>
 	<entry key="1579"><![CDATA[URL запиту сертифіката]]></entry>
 	<entry key="1580"><![CDATA[URL запиту даних]]></entry>
@@ -570,13 +534,11 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="1586"><![CDATA[Атрибути запиту сертифіката]]></entry>
 	<entry key="1587"><![CDATA[Uri повернення]]></entry>
 	<entry key="1588"><![CDATA[Ви можете ввести адресу у форматі: Имя1 Фамилия1 <адрес1> або "Имя2 Фамилия2" <адрес2> або 'Имя3 Фамилия3' <адрес3> або адресу]]></entry>
-	<entry key="1589"><![CDATA[Повідомити про відключення]]></entry>
 	<entry key="1590"><![CDATA[Показати]]></entry>
 	<entry key="1592"><![CDATA[Введена дата початку раніше дати закінчення.]]></entry>
 	<entry key="1593"><![CDATA[Код виходу]]></entry>
 	<entry key="1594"><![CDATA[Повідомлення конвертації]]></entry>
 	<entry key="1595"><![CDATA[Файл запису не знайдено]]></entry>
-	<entry key="1598"><![CDATA[Безпека]]></entry>
 	<entry key="1599"><![CDATA[Доступ заборонений. У вас немає прав для входу в цю кімнату.]]></entry>
 	<entry key="1600"><![CDATA[Відновити]]></entry>
 	<entry key="access.denied.header"><![CDATA[Access denied. You are not authorized to perform this action.]]></entry>
@@ -621,13 +583,13 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="admin.purge.desc"><![CDATA[Ви дійсно бажаєте знищити це? Процес є незворотній!]]></entry>
 	<entry key="admin.restore"><![CDATA[Restore]]></entry>
 	<entry key="admin.room.hidden.elements"><![CDATA[Приховані елементи кімнати]]></entry>
-	<entry key="admin.room.wait-moderator.info"><![CDATA[No one can use room until moderator has joined]]></entry>
+	<entry key="admin.room.wait-moderator.info"><![CDATA[No one can use the room until moderator has joined]]></entry>
 	<entry key="admin.room.wait-moderator.label"><![CDATA[Wait for a moderator]]></entry>
 	<entry key="appointment.reminder.EMAIL"><![CDATA[звичайний e-майл]]></entry>
 	<entry key="appointment.reminder.ICAL"><![CDATA[iCal e-майл]]></entry>
 	<entry key="appointment.reminder.NONE"><![CDATA[не посилати повідомлення]]></entry>
 	<entry key="appointment.tab.advanced"><![CDATA[Додаткові]]></entry>
-	<entry key="appointment.tab.general"><![CDATA[Загальне]]></entry>
+	<entry key="lbl.general"><![CDATA[Загальне]]></entry>
 	<entry key="bad.captcha.text"><![CDATA[You have entered incorrect captcha text]]></entry>
 	<entry key="bad.password.digit"><![CDATA['Weak' password: at least 1 digit is required]]></entry>
 	<entry key="bad.password.lower"><![CDATA['Weak' password: at least 1 lower-case letter is required]]></entry>
@@ -669,7 +631,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="dashboard.widget.admin.cleanup.warn"><![CDATA[Ви впевнені, що хочете видалити всі тимчасові файли? Цю операцію не можна буде скасувати.]]></entry>
 	<entry key="dashboard.widget.admin.desc"><![CDATA[Основні адміністративні фукції]]></entry>
 	<entry key="dashboard.widget.admin.title"><![CDATA[Адміністративні функції]]></entry>
-	<entry key="download.image.steps"><![CDATA[Please right click the image and choose "Save image as"]]></entry>
 	<entry key="download.pdf"><![CDATA[Завантажити як PDF]]></entry>
 	<entry key="download.png"><![CDATA[Завантажити як PNG]]></entry>
 	<entry key="error.bad.credentials"><![CDATA[Username/email and/or password are incorrect.]]></entry>
@@ -754,9 +715,8 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="install.wizard.db.step.valid"><![CDATA[Перевірка БД пройшла успішно]]></entry>
 	<entry key="install.wizard.install.desc"><![CDATA[будь Ласка, натисніть кнопку "Готово" для інсталяції!]]></entry>
 	<entry key="install.wizard.install.failed"><![CDATA[Помилка установки]]></entry>
-	<entry key="install.wizard.install.header"><![CDATA[Установка]]></entry>
 	<entry key="install.wizard.install.started"><![CDATA[зачекайте, йде установка]]></entry>
-	<entry key="install.wizard.params.step1.email"><![CDATA[пошта]]></entry>
+	<entry key="install.wizard.installation"><![CDATA[Установка]]></entry>
 	<entry key="install.wizard.params.step1.email.title"><![CDATA[Введіть адресу електронної пошти]]></entry>
 	<entry key="install.wizard.params.step1.group"><![CDATA[Назва]]></entry>
 	<entry key="install.wizard.params.step1.group.title"><![CDATA[Введіть організацію за замовчуванням]]></entry>
@@ -799,7 +759,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="install.wizard.params.step3.imageMagicPath"><![CDATA[ImageMagick Шлях]]></entry>
 	<entry key="install.wizard.params.step3.imageMagicPath.text"><![CDATA[Установите ImageMagick на Ваш сервер, более подробную информацию касающуюся установки можно посмотреть тут http://www.imagemagick.org Инструкцию по установке Вы можете найти здесь http://www.imagemagick.org/script/binary-releases.php, однако в большинстве систем Линукс Вы можете установить его через Ваш менеджер пакетов (apt-get it)]]></entry>
 	<entry key="install.wizard.params.step3.imageMagicPath.title"><![CDATA[Вкажіть шлях до ImageMagick, або не заповнюйте це поле якщо ImageMagick встановлений в шляхах Вашої системи]]></entry>
-	<entry key="install.wizard.params.step3.installation"><![CDATA[Установка]]></entry>
 	<entry key="install.wizard.params.step3.officePath"><![CDATA[OpenOffice/LibreOffice Шлях для jodconverter]]></entry>
 	<entry key="install.wizard.params.step3.officePath.text"><![CDATA[Шлях до OpenOffice/LibreOffice (не обов'язковий) будь ласка, встановіть цей шлях у разі коли jodconverter не в змозі знайти шлях до встановленого OpenOffice/LibreOffice]]></entry>
 	<entry key="install.wizard.params.step3.officePath.title"><![CDATA[Шлях до OpenOffice/LibreOffice (не обов'язковий) будь ласка, встановіть цей шлях, у разі коли jodconverter не в змозі знайти автоматично шлях до встановленого OpenOffice/LibreOffice]]></entry>
@@ -870,6 +829,8 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="label.dock.panel"><![CDATA[Click to dock panel]]></entry>
 	<entry key="label.undock.panel"><![CDATA[Натисніть щоб відокремити панель]]></entry>
 	<entry key="lbl.cancel"><![CDATA[Скасувати]]></entry>
+	<entry key="lbl.email"><![CDATA[E-mail:]]></entry>
+	<entry key="lbl.enter"><![CDATA[Вхід]]></entry>
 	<entry key="lbl.new"><![CDATA[new]]></entry>
 	<entry key="lbl.or"><![CDATA[or]]></entry>
 	<entry key="lbl.refresh"><![CDATA[Оновити]]></entry>
@@ -886,7 +847,7 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="microphone.on"><![CDATA[Microphone is on. Click to turn off.]]></entry>
 	<entry key="my.room.conference"><![CDATA[Моя кімната для конференцій(до 16 учасників)]]></entry>
 	<entry key="my.room.presentation"><![CDATA[My presentation room (for 1-120 users)]]></entry>
-	<entry key="network.test.click.play"><![CDATA[Click a play button to run a test]]></entry>
+	<entry key="network.test.click.play"><![CDATA[Click the play button to run a test]]></entry>
 	<entry key="network.test.copy.log"><![CDATA[Copy the log to the clipboard]]></entry>
 	<entry key="network.test.dwn"><![CDATA[Швидкість стягування]]></entry>
 	<entry key="network.test.dwn.bytes"><![CDATA[Стягнено байтів]]></entry>
@@ -907,9 +868,6 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 	<entry key="network.test.port"><![CDATA[Порт]]></entry>
 	<entry key="network.test.port.avail"><![CDATA[port is available]]></entry>
 	<entry key="network.test.port.stopped"><![CDATA[stopped]]></entry>
-	<entry key="network.test.report"><![CDATA[report]]></entry>
-	<entry key="network.test.report.con.err"><![CDATA[connection error]]></entry>
-	<entry key="network.test.report.error"><![CDATA[Error]]></entry>
 	<entry key="network.test.report.start"><![CDATA[start test...]]></entry>
 	<entry key="network.test.sec"><![CDATA[sec]]></entry>
 	<entry key="network.test.upl"><![CDATA[Upload speed]]></entry>
@@ -941,7 +899,7 @@ see https://openmeetings.apache.org/LanguageEditor.html for Details
 		in {1} days. If you would like to save this recording, please download it before then.]]></entry>
 	<entry key="template.recording.expiring.footer"><![CDATA[Regards,<br/>
 	{0} Support Team.]]></entry>
-	<entry key="template.recording.expiring.greetings"><![CDATA[Dear {0}]]></entry>
+	<entry key="template.recording.expiring.greetings"><![CDATA[Hello {0}]]></entry>
 	<entry key="template.recording.expiring.subj.prefix"><![CDATA[Recording will be deleted]]></entry>
 	<entry key="template.recording.expiring.subj.room"><![CDATA[ -- Room[{0}]]]></entry>
 	<entry key="ulist.right.audio.grant"><![CDATA[Allow this user to use microphone]]></entry>

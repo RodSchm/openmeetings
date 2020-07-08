@@ -31,6 +31,7 @@ import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CALENDAR
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CAM_FPS;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CHAT_SEND_ON_ENTER;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CRYPT;
+import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CSP_ENABLED;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CSP_FONT;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CSP_FRAME;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_CSP_IMAGE;
@@ -93,14 +94,15 @@ import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SIP_ROOM
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_PASS;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_PORT;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_SERVER;
+import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_SSL;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_SYSTEM_EMAIL;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_TIMEOUT;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_TIMEOUT_CON;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_TLS;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.CONFIG_SMTP_USER;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_APP_NAME;
+import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_CSP_DATA;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_CSP_FONT;
-import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_CSP_IMAGE;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_CSP_STYLE;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_MAX_UPLOAD_SIZE;
 import static org.apache.openmeetings.util.OpenmeetingsVariables.DEFAULT_MINUTES_REMINDER_SEND;
@@ -372,14 +374,16 @@ public class ImportInitvalues {
 				+ cspMore, DEFAULT_CSP_FONT), VER_5_0_0);
 		addCfg(list, CONFIG_CSP_FRAME, SELF.getValue(), Configuration.Type.STRING, String.format("Value for 'frame-src' directive of 'Content-Security-Policy' header (default: %s)"
 				+ cspMore, SELF), VER_5_0_0);
-		addCfg(list, CONFIG_CSP_IMAGE, DEFAULT_CSP_IMAGE, Configuration.Type.STRING, String.format("Value for 'image-src' directive of 'Content-Security-Policy' header (default: %s)"
-				+ cspMore, DEFAULT_CSP_IMAGE), VER_5_0_0);
-		addCfg(list, CONFIG_CSP_MEDIA, SELF.getValue(), Configuration.Type.STRING, String.format("Value for 'media-src' directive of 'Content-Security-Policy' header (default: %s)"
-				+ cspMore, SELF), VER_5_0_0);
+		addCfg(list, CONFIG_CSP_IMAGE, DEFAULT_CSP_DATA, Configuration.Type.STRING, String.format("Value for 'image-src' directive of 'Content-Security-Policy' header (default: %s)"
+				+ cspMore, DEFAULT_CSP_DATA), VER_5_0_0);
+		addCfg(list, CONFIG_CSP_MEDIA, DEFAULT_CSP_DATA, Configuration.Type.STRING, String.format("Value for 'media-src' directive of 'Content-Security-Policy' header (default: %s)"
+				+ cspMore, DEFAULT_CSP_DATA), VER_5_0_0);
 		addCfg(list, CONFIG_CSP_SCRIPT, STRICT_DYNAMIC.getValue(), Configuration.Type.STRING, String.format("Value for 'script-src' directive of 'Content-Security-Policy' header (default: %s)"
 				+ cspMore, STRICT_DYNAMIC), VER_5_0_0);
 		addCfg(list, CONFIG_CSP_STYLE, DEFAULT_CSP_STYLE, Configuration.Type.STRING, String.format("Value for 'style-src' directive of 'Content-Security-Policy' header (default: %s)"
 				+ cspMore, DEFAULT_CSP_STYLE), VER_5_0_0);
+		addCfg(list, CONFIG_SMTP_SSL, String.valueOf(false), Configuration.Type.BOOL, "Enable SSL", VER_5_0_0);
+		addCfg(list, CONFIG_CSP_ENABLED, String.valueOf(true), Configuration.Type.BOOL, "Whether or not CSP secure headers are enabled", VER_5_0_0);
 		return list;
 	}
 	public void loadConfiguration(InstallationConfig cfg) {

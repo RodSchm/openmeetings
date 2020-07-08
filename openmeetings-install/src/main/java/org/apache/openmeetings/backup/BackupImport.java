@@ -686,9 +686,6 @@ public class BackupImport {
 			String tz = u.getTimeZoneId();
 			if (tz == null) {
 				u.setTimeZoneId(jNameTimeZone);
-				u.setForceTimeZoneCheck(true);
-			} else {
-				u.setForceTimeZoneCheck(false);
 			}
 
 			Long userId = u.getId();
@@ -748,6 +745,9 @@ public class BackupImport {
 		unmarshaller.setAdapter(new GroupAdapter(groupDao, groupMap));
 
 		readList(unmarshaller, base, "rooms_organisation.xml", ROOM_GRP_LIST_NODE, ROOM_GRP_NODE, eClazz, rg -> {
+			if (rg.getRoom() == null || rg.getGroup() == null) {
+				return;
+			}
 			Room r = roomDao.get(rg.getRoom().getId());
 			if (r == null || rg.getGroup().getId() == null) {
 				return;

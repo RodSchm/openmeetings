@@ -22,8 +22,8 @@ var Video = (function() {
 	function _getScreenStream(msg, callback) {
 		function __handleScreenError(err) {
 			VideoManager.sendMessage({id: 'errorSharing'});
-			Sharer.setShareState(SHARE_STOPED);
-			Sharer.setRecState(SHARE_STOPED);
+			Sharer.setShareState(SHARE_STOPPED);
+			Sharer.setRecState(SHARE_STOPPED);
 			OmUtil.error(err);
 		}
 		const b = kurentoUtils.WebRtcPeer.browser;
@@ -38,7 +38,7 @@ var Video = (function() {
 			cnts = Sharer.baseConstraints(sd);
 			cnts.video.mediaSource = sd.shareType;
 			promise = navigator.mediaDevices.getUserMedia(cnts);
-		} else if (VideoUtil.isChrome(b)) {
+		} else if (VideoUtil.isChrome(b) || VideoUtil.isEdgeChromium(b)) {
 			cnts = {
 				video: true
 			};
@@ -71,6 +71,9 @@ var Video = (function() {
 			}
 			navigator.mediaDevices.getUserMedia(cnts)
 				.then(function(stream) {
+					if (msg.instanceUid !== v.data('instance-uid')) {
+						return;
+					}
 					let _stream = stream;
 					const data = {};
 					if (stream.getAudioTracks().length !== 0) {
@@ -151,10 +154,10 @@ var Video = (function() {
 		data.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
 			VideoUtil.addIceServers(options, msg)
 			, function (error) {
+				if (true === this.cleaned) {
+					return;
+				}
 				if (error) {
-					if (true === this.cleaned) {
-						return;
-					}
 					return OmUtil.error(error);
 				}
 				if (data.analyser) {
@@ -162,10 +165,10 @@ var Video = (function() {
 					level.meter(data.analyser, lm, _micActivity, OmUtil.error);
 				}
 				this.generateOffer(function(error, offerSdp) {
+					if (true === this.cleaned) {
+						return;
+					}
 					if (error) {
-						if (true === this.cleaned) {
-							return;
-						}
 						return OmUtil.error('Sender sdp offer error ' + error);
 					}
 					OmUtil.log('Invoking Sender SDP offer callback function');
@@ -201,17 +204,17 @@ var Video = (function() {
 		data.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
 			options
 			, function(error) {
+				if (true === this.cleaned) {
+					return;
+				}
 				if (error) {
-					if (true === this.cleaned) {
-						return;
-					}
 					return OmUtil.error(error);
 				}
 				this.generateOffer(function(error, offerSdp) {
+					if (true === this.cleaned) {
+						return;
+					}
 					if (error) {
-						if (true === this.cleaned) {
-							return;
-						}
 						return OmUtil.error('Receiver sdp offer error ' + error);
 					}
 					OmUtil.log('Invoking Receiver SDP offer callback function');
@@ -238,9 +241,11 @@ var Video = (function() {
 			t.removeClass('mic-on');
 		}
 	}
-	function _initContainer(_id, name, opts) {
+	function _initContainer(_id, name, opts, instanceUid) {
 		let contSel = '#user' + sd.cuid;
-		hasVideo = VideoUtil.hasVideo(sd) || $(contSel).length < 1;
+		const _hasVideo = VideoUtil.hasVideo(sd)
+		size = {width: _hasVideo ? sd.width : 120, height: _hasVideo ? sd.height : 90};
+		hasVideo = _hasVideo || $(contSel).length < 1;
 		if (hasVideo) {
 			if (opts.interview) {
 				const area = $('.pod-area');
@@ -256,6 +261,7 @@ var Video = (function() {
 				.attr('title', name)
 				.attr('data-client-uid', sd.cuid)
 				.attr('data-client-type', sd.type)
+				.attr('data-instance-uid', instanceUid)
 				.data(self));
 		v = $('#' + _id);
 		vc = v.find('.video');
@@ -287,7 +293,7 @@ var Video = (function() {
 			});
 		}
 		v.parent().find('.ui-dialog-titlebar-close').remove();
-		v.parent().find('.ui-dialog-titlebar').append(OmUtil.tmpl('#video-button-bar'));
+		v.parent().append(OmUtil.tmpl('#video-button-bar'));
 		const refresh = v.parent().find('.btn-refresh')
 			, tgl = v.parent().find('.btn-toggle')
 			, cls = v.parent().find('.btn-wclose');
@@ -320,12 +326,12 @@ var Video = (function() {
 	}
 	function _init(msg) {
 		sd = msg.stream;
+		msg.instanceUid = uuidv4();
 		if (!vol) {
 			vol = Volume();
 		}
 		iceServers = msg.iceServers;
 		sd.activities = sd.activities.sort();
-		size = {width: sd.width, height: sd.height};
 		isSharing = VideoUtil.isSharing(sd);
 		isRecording = VideoUtil.isRecording(sd);
 		const _id = VideoUtil.getVid(sd.uid)
@@ -334,7 +340,7 @@ var Video = (function() {
 			, _h = sd.height
 			, opts = Room.getOptions();
 		sd.self = sd.cuid === opts.uid;
-		const contSel = _initContainer(_id, name, opts);
+		const contSel = _initContainer(_id, name, opts, msg.instanceUid);
 		footer = v.find('.footer');
 		if (!opts.showMicStatus) {
 			footer.hide();
@@ -369,17 +375,28 @@ var Video = (function() {
 		return v;
 	}
 	function _update(_c) {
-		const prevA = sd.activities;
+		const prevA = sd.activities
+			, prevW = sd.width
+			, prevH = sd.height
+			, prevCam = sd.cam
+			, prevMic = sd.mic;
 		sd.activities = _c.activities.sort();
 		sd.level = _c.level;
 		sd.user.firstName = _c.user.firstName;
 		sd.user.lastName = _c.user.lastName;
 		sd.user.displayName = _c.user.displayName;
+		sd.width = _c.width;
+		sd.height = _c.height;
+		sd.cam = _c.cam;
+		sd.mic = _c.mic;
 		const name = sd.user.displayName;
 		if (hasVideo) {
 			v.dialog('option', 'title', name).parent().find('.ui-dialog-titlebar').attr('title', name);
 		}
-		const same = prevA.length === sd.activities.length && prevA.every(function(value, index) { return value === sd.activities[index]})
+		const same = prevA.length === sd.activities.length
+			&& prevA.every(function(value, index) { return value === sd.activities[index]})
+			&& prevW === sd.width && prevH === sd.height
+			&& prevCam == sd.cam && prevMic === sd.mic;
 		if (sd.self && !same) {
 			_cleanup();
 			v.remove();
@@ -388,8 +405,7 @@ var Video = (function() {
 	}
 	function __createVideo(data) {
 		const _id = VideoUtil.getVid(sd.uid);
-		_resizeDlgArea(hasVideo ? size.width : 120
-			, hasVideo ? size.height : 90);
+		_resizeDlgArea(size.width, size.height);
 		if (hasVideo && !isSharing && !isRecording) {
 			VideoUtil.setPos(v, VideoUtil.getPos(VideoUtil.getRects(VIDWIN_SEL), sd.width, sd.height + 25));
 		}

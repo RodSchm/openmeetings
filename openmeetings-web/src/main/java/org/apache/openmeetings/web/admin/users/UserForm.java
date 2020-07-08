@@ -49,13 +49,13 @@ import org.apache.openmeetings.service.mail.EmailManager;
 import org.apache.openmeetings.web.admin.AdminBaseForm;
 import org.apache.openmeetings.web.common.ComunityUserForm;
 import org.apache.openmeetings.web.common.GeneralUserForm;
+import org.apache.openmeetings.web.common.UploadableProfileImagePanel;
 import org.apache.openmeetings.web.util.DateLabel;
 import org.apache.openmeetings.web.util.RestrictiveChoiceProvider;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -95,6 +95,7 @@ public class UserForm extends AdminBaseForm<User> {
 	private final Modal<String> warning;
 	private final DropDownChoice<Long> domainId = new DropDownChoice<>("domainId");
 	private final PasswordDialog adminPass;
+	private final UploadableProfileImagePanel avatar = new UploadableProfileImagePanel("avatar", null);
 	@SpringBean
 	private UserDao userDao;
 	@SpringBean
@@ -116,6 +117,7 @@ public class UserForm extends AdminBaseForm<User> {
 	protected void onInitialize() {
 		super.onInitialize();
 		add(mainContainer);
+		mainContainer.add(avatar.setOutputMarkupPlaceholderTag(true));
 		mainContainer.add(generalForm = new GeneralUserForm("general", getModel(), true));
 		mainContainer.add(password.setResetPassword(false).setLabel(new ResourceModel("110")).setRequired(false)
 				.add(passValidator = new StrongPasswordValidator(getModelObject())));
@@ -135,8 +137,6 @@ public class UserForm extends AdminBaseForm<User> {
 		mainContainer.add(new Label("ownerId"));
 		mainContainer.add(new DateLabel("inserted"));
 		mainContainer.add(new DateLabel("updated"));
-
-		mainContainer.add(new CheckBox("forceTimeZoneCheck"));
 
 		mainContainer.add(new Select2MultiChoice<>("rights", null, new RestrictiveChoiceProvider<Right>() {
 			private static final long serialVersionUID = 1L;
@@ -199,8 +199,20 @@ public class UserForm extends AdminBaseForm<User> {
 
 	@Override
 	protected void onRestoreSubmit(AjaxRequestTarget target, Form<?> form) {
-		getModelObject().setDeleted(false);
-		onSaveSubmit(target, form);
+		User u = getModelObject();
+		u.setDeleted(false);
+		if (!userDao.checkLogin(u.getLogin(), u.getType(), u.getDomainId(), u.getId())) {
+			error(getString("error.login.inuse"));
+		}
+		if (u.getAddress() != null && !userDao.checkEmail(u.getAddress().getEmail(), u.getType(), u.getDomainId(), u.getId())) {
+			error(getString("error.email.inuse"));
+		}
+		if (hasError()) {
+			u.setDeleted(true);
+			target.add(this);
+		} else {
+			onSaveSubmit(target, form);
+		}
 	}
 
 	@Override
@@ -341,6 +353,8 @@ public class UserForm extends AdminBaseForm<User> {
 
 	public void update(AjaxRequestTarget target) {
 		updateDomain(target);
+		avatar.setUserId(getModelObject().getId());
+		avatar.update();
 		if (target != null) {
 			target.add(this, listContainer);
 		}
@@ -349,7 +363,7 @@ public class UserForm extends AdminBaseForm<User> {
 	@Override
 	protected void onValidate() {
 		User u = getModelObject();
-		if(!userDao.checkLogin(login.getConvertedInput(), u.getType(), u.getDomainId(), u.getId())) {
+		if (!userDao.checkLogin(login.getConvertedInput(), u.getType(), u.getDomainId(), u.getId())) {
 			error(getString("error.login.inuse"));
 		}
 		super.onValidate();

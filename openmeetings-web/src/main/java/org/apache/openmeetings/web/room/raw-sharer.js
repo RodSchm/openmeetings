@@ -1,13 +1,22 @@
 /* Licensed under the Apache License, Version 2.0 (the "License") http://www.apache.org/licenses/LICENSE-2.0 */
 var SHARE_STARTING = 'starting';
 var SHARE_STARTED = 'started';
-var SHARE_STOPED = 'stoped';
+var SHARE_STOPPED = 'stopped';
 var Sharer = (function() {
 	const self = {};
 	let sharer, type, fps, sbtn, rbtn, width, height
-		, shareState = SHARE_STOPED, recState = SHARE_STOPED;
+		, shareState = SHARE_STOPPED, recState = SHARE_STOPPED;
 
+	/**
+	 * Re-entering the room should reset settings.
+	 */
+	function reset() {
+		shareState = SHARE_STOPPED;
+		recState = SHARE_STOPPED;
+	}
+	
 	function _init() {
+		reset();
 		sharer = $('#sharer').dialog({
 			classes: {
 				'ui-dialog': 'sharer'
@@ -17,6 +26,8 @@ var Sharer = (function() {
 			, autoOpen: false
 			, resizable: false
 		});
+		fixJQueryUIDialogTouch(sharer);
+		
 		if (!VideoUtil.sharingSupported()) {
 			sharer.find('.container').remove();
 			sharer.find('.alert').show();
@@ -26,7 +37,7 @@ var Sharer = (function() {
 			fps = sharer.find('select.fps');
 			_disable(fps, VideoUtil.isEdge(b));
 			sbtn = sharer.find('.share-start-stop').off().click(function() {
-				if (shareState === SHARE_STOPED) {
+				if (shareState === SHARE_STOPPED) {
 					_setShareState(SHARE_STARTING);
 					VideoManager.sendMessage({
 						id: 'wannaShare'
@@ -47,7 +58,7 @@ var Sharer = (function() {
 			rbtn = sharer.find('.record-start-stop').off();
 			if (Room.getOptions().allowRecording) {
 				rbtn.show().click(function() {
-					if (recState === SHARE_STOPED) {
+					if (recState === SHARE_STOPPED) {
 						_setRecState(SHARE_STARTING);
 						VideoManager.sendMessage({
 							id: 'wannaRecord'
@@ -78,10 +89,10 @@ var Sharer = (function() {
 	}
 	function _typeDisabled(_b) {
 		const b = _b || kurentoUtils.WebRtcPeer.browser;
-		return VideoUtil.isEdge(b) || VideoUtil.isChrome(b);
+		return VideoUtil.isEdge(b) || VideoUtil.isChrome(b) || VideoUtil.isEdgeChromium(b);
 	}
 	function _setBtnState(btn, state) {
-		const dis = SHARE_STOPED !== state
+		const dis = SHARE_STOPPED !== state
 			, typeDis = _typeDisabled();
 		_disable(type, dis);
 		_disable(fps, dis || typeDis);

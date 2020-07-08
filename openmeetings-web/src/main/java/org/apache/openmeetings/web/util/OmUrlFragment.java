@@ -81,6 +81,8 @@ public class OmUrlFragment implements Serializable {
 	public static final OmUrlFragment PROFILE_MESSAGES = new OmUrlFragment(AreaKeys.profile, TYPE_MESSAGES);
 	public static final OmUrlFragment CALENDAR = new OmUrlFragment(AreaKeys.user, TYPE_CALENDAR);
 	public static final OmUrlFragment ROOMS_PUBLIC = new OmUrlFragment(AreaKeys.rooms, TYPE_PUBLIC);
+	public static final OmUrlFragment ROOMS_GROUP = new OmUrlFragment(AreaKeys.rooms, TYPE_GROUP);
+	public static final OmUrlFragment ROOMS_MY = new OmUrlFragment(AreaKeys.rooms, TYPE_MY);
 
 	public enum AreaKeys {
 		user
@@ -275,20 +277,21 @@ public class OmUrlFragment implements Serializable {
 					basePanel = new WidgetsPanel(CHILD_ID);
 				}
 				break;
-			case room:
+			case room: {
+				Room r = null;
 				try {
 					Long roomId = Long.valueOf(type);
-					Room r = Application.get().getBean(RoomDao.class).get(roomId);
-					if (r != null) {
-						moveToServer(r);
-						basePanel = new RoomPanel(CHILD_ID, r);
-					}
+					r = Application.get().getBean(RoomDao.class).get(roomId);
 				} catch(NumberFormatException ne) {
-					//skip it, bad roomid passed
+					r = Application.get().getBean(RoomDao.class).get(type);
 				}
-				if (basePanel == null) {
+				if (r != null) {
+					moveToServer(r);
+					basePanel = new RoomPanel(CHILD_ID, r);
+				} else {
 					basePanel = new OmDashboardPanel(CHILD_ID);
 				}
+			}
 				break;
 			case rooms:
 				basePanel = new RoomsSelectorPanel(CHILD_ID, type);

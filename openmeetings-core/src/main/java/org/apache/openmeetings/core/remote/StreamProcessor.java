@@ -128,6 +128,9 @@ public class StreamProcessor implements IStreamProcessor {
 				if (sender != null) {
 					Client sendClient = cm.getBySid(sender.getSid());
 					sd = sendClient.getStream(sender.getUid());
+					if (sd == null) {
+						break;
+					}
 					if (StreamType.SCREEN == sd.getType() && sd.hasActivity(Activity.RECORD) && !sd.hasActivity(Activity.SCREEN)) {
 						break;
 					}
@@ -171,8 +174,11 @@ public class StreamProcessor implements IStreamProcessor {
 	}
 
 	private void handleBroadcastStarted(Client c, final String uid, JSONObject msg) {
+		if (!kHandler.isConnected()) {
+			return;
+		}
 		StreamDesc sd = c.getStream(uid);
-		KStream sender= getByUid(uid);
+		KStream sender = getByUid(uid);
 		try {
 			if (sender == null) {
 				KRoom room = kHandler.getRoom(c.getRoomId());
@@ -227,6 +233,9 @@ public class StreamProcessor implements IStreamProcessor {
 
 	public void toggleActivity(Client c, Activity a) {
 		log.info("PARTICIPANT {}: trying to toggle activity {}", c, a);
+		if (!kHandler.isConnected()) {
+			return;
+		}
 
 		if (activityAllowed(c, a, c.getRoom())) {
 			boolean wasBroadcasting = isBroadcasting(c);
@@ -257,7 +266,7 @@ public class StreamProcessor implements IStreamProcessor {
 						.put("id", "broadcast")
 						.put("stream", sd.toJson())
 						.put("cleanup", new JSONArray(closed))
-						.put(PARAM_ICE, kHandler.getTurnServers(false)));
+						.put(PARAM_ICE, kHandler.getTurnServers(c, false)));
 			}
 		}
 	}
@@ -497,6 +506,7 @@ public class StreamProcessor implements IStreamProcessor {
 			}
 		}
 		if (c.getRoomId() != null) {
+			getByRoom(c.getRoomId()).stream().forEach(stream -> stream.remove(c)); // listeners of existing streams should be cleaned-up
 			checkStreams(c.getRoomId());
 		}
 	}
@@ -564,6 +574,8 @@ public class StreamProcessor implements IStreamProcessor {
 
 	@Override
 	public void destroy() {
-		streamByUid.clear();
+		for (Map.Entry<String, KStream> e : streamByUid.entrySet()) {
+			release(e.getValue(), true);
+		}
 	}
 }

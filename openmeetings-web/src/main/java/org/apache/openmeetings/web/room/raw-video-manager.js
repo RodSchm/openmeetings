@@ -6,7 +6,7 @@ var VideoManager = (function() {
 	function _onVideoResponse(m) {
 		const w = $('#' + VideoUtil.getVid(m.uid))
 			, v = w.data()
-			, peer = v.getPeer();
+			, peer = v && v.getPeer();
 
 		if (peer) {
 			peer.processAnswer(m.sdpAnswer, function (error) {
@@ -47,12 +47,12 @@ var VideoManager = (function() {
 			, uid = sd.uid
 			, w = $('#' + VideoUtil.getVid(uid))
 			, v = w.data();
-		if (VideoUtil.isSharing(sd) || VideoUtil.isRecording(sd)) {
+		if (v && (VideoUtil.isSharing(sd) || VideoUtil.isRecording(sd))) {
 			// Update activities in the current data object
 			v.stream().activities = sd.activities;
 		}
-		Sharer.setShareState(VideoUtil.isSharing(sd) ? SHARE_STARTED : SHARE_STOPED);
-		Sharer.setRecState(VideoUtil.isRecording(sd) ? SHARE_STARTED : SHARE_STOPED);
+		Sharer.setShareState(VideoUtil.isSharing(sd) ? SHARE_STARTED : SHARE_STOPPED);
+		Sharer.setRecState(VideoUtil.isRecording(sd) ? SHARE_STARTED : SHARE_STOPPED);
 	}
 	function _onReceive(msg) {
 		const uid = msg.stream.uid;
@@ -83,7 +83,7 @@ var VideoManager = (function() {
 				{
 					const w = $('#' + VideoUtil.getVid(m.uid))
 						, v = w.data()
-						, peer = v.getPeer();
+						, peer = v && v.getPeer();
 
 					if (peer) {
 						peer.addIceCandidate(m.candidate, function (error) {
@@ -150,6 +150,8 @@ var VideoManager = (function() {
 		c.streams.forEach(function(sd) {
 			streamMap[sd.uid] = sd.uid;
 			sd.self = c.self;
+			sd.cam = c.cam;
+			sd.mic = c.mic;
 			if (VideoUtil.isSharing(sd) || VideoUtil.isRecording(sd)) {
 				return;
 			}
@@ -280,8 +282,10 @@ var VideoManager = (function() {
 	}
 	function _muteOthers(uid) {
 		$(VID_SEL).each(function() {
-			const w= $(this);
-			w.data().mute('room' + uid !== w.data('client-uid'));
+			const w= $(this), v = w.data(), v2 = w.data('client-uid');
+			if (v && v2) {
+				v.mute('room' + uid !== v2);
+			}
 		});
 	}
 	function _toggleActivity(activity) {

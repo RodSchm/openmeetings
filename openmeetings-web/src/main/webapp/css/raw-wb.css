@@ -2,12 +2,12 @@
 .room-block .sb-wb .wb-block {
 	position: absolute;
 	height: 100%;
-	width: calc(100% - var(--room-sidebar-width) - var(--buffer-size));
+	width: calc(100% - var(--sidebar-width) - var(--buffer-size));
 	top: 0;
-	left: calc(var(--room-sidebar-width) + var(--buffer-size));
+	left: calc(var(--sidebar-width) + var(--buffer-size));
 }
 html[dir="rtl"] .room-block .sb-wb .wb-block {
-	right: calc(var(--room-sidebar-width) + var(--buffer-size));
+	right: calc(var(--sidebar-width) + var(--buffer-size));
 	left: auto;
 }
 .room-block .sb-wb .wb-block.droppable-hover {
@@ -259,6 +259,7 @@ html[dir="rtl"] .room-block .sb-wb .wb-block {
 .wb-formula .text-container {
 	margin: 0 5px 5px 0;
 	padding: 5px;
+	height: calc(100% - 90px);
 }
 .wb-formula .status {
 	min-height: 16px;
@@ -279,6 +280,9 @@ html[dir="rtl"] .room-block .sb-wb .wb-block {
 }
 .wb-tabbar .scroll-container {
 	overflow: hidden;
+}
+.wb-tabbar .scroll-container .scrollable {
+	width: max-content;
 }
 .wb-tabbar .scroll-container .scrollable, .wb-tabbar .scroll-container .scrollable li {
 	display: flex;
@@ -323,11 +327,29 @@ html[dir="rtl"] .room-block .sb-wb .wb-block {
 	border: 1px solid #888888;
 	box-shadow: 5px 5px 5px #888888;
 }
+.wb-area .wb-zoom {
+	display: flex;
+	padding-top: 2px;
+	min-width: 360px
+}
+.wb-area .wb-zoom .doc-group
+, .wb-area .wb-zoom .zoom-group
+, .wb-area .wb-zoom .settings-group
+{
+	width: auto;
+}
 .wb-area .wb-zoom input {
 	width: 50px
 }
 .wb-area .wb-zoom .settings-group {
 	display: none;
+	margin-left: 2px;
+}
+.wb-area .wb-zoom .doc-group {
+	margin-left: 5px;
+}
+.wb-area .wb-zoom .zoom-group {
+	margin-left: 2px;
 }
 #wb-rename-menu {
 	display: none;

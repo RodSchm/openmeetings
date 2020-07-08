@@ -32,7 +32,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -53,16 +56,15 @@ import org.apache.openmeetings.db.util.ws.TextRoomMessage;
 import org.kurento.client.Endpoint;
 import org.kurento.client.EventListener;
 import org.kurento.client.KurentoClient;
-import org.kurento.client.KurentoConnectionListener;
 import org.kurento.client.MediaObject;
 import org.kurento.client.MediaPipeline;
 import org.kurento.client.ObjectCreatedEvent;
-import org.kurento.client.ObjectDestroyedEvent;
 import org.kurento.client.PlayerEndpoint;
 import org.kurento.client.RecorderEndpoint;
 import org.kurento.client.Tag;
 import org.kurento.client.Transaction;
 import org.kurento.client.WebRtcEndpoint;
+import org.kurento.jsonrpc.client.JsonRpcClientNettyWebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +95,7 @@ public class KurentoHandler {
 	private String turnMode;
 	private int turnTtl = 60; //minutes
 	private KurentoClient client;
-	private boolean connected = false;
+	private final AtomicBoolean connected = new AtomicBoolean(false);
 	private String kuid;
 	private final Map<Long, KRoom> rooms = new ConcurrentHashMap<>();
 	private Runnable check;
@@ -110,44 +112,94 @@ public class KurentoHandler {
 	private StreamProcessor streamProcessor;
 
 	boolean isConnected() {
-		boolean connctd = client != null && !client.isClosed() && connected;
+		boolean connctd = connected.get() && client != null && !client.isClosed();
 		if (!connctd) {
 			log.warn(WARN_NO_KURENTO);
 		}
 		return connctd;
 	}
 
+	@PostConstruct
 	public void init() {
 		check = () -> {
 			try {
+				if (client != null) {
+					return;
+				}
+				log.debug("Reconnecting KMS");
 				kuid = randomUUID().toString();
-				client = KurentoClient.create(kurentoWsUrl, new KConnectionListener(kuid));
+				client = KurentoClient.createFromJsonRpcClient(new JsonRpcClientNettyWebSocket(kurentoWsUrl) {
+						{
+							setTryReconnectingMaxTime(0);
+						}
+
+						private void notifyRooms(boolean connected) {
+							WebSocketHelper.sendServer(new TextRoomMessage(null, new User(), RoomMessage.Type.KURENTO_STATUS, new JSONObject().put("connected", connected).toString()));
+						}
+
+						private void onDisconnect() {
+							log.info("!!! Kurento disconnected");
+							connected.set(false);
+							notifyRooms(false);
+							clean();
+						}
+
+						@Override
+						protected void handleReconnectDisconnection(final int statusCode, final String closeReason) {
+							if (!isClosedByUser()) {
+								log.debug("{}JsonRpcWsClient disconnected from {} because {}.", label, uri, closeReason);
+								onDisconnect();
+							} else {
+								super.handleReconnectDisconnection(statusCode, closeReason);
+								onDisconnect();
+							}
+						}
+
+						@Override
+						protected void fireConnected() {
+							log.info("!!! Kurento connected");
+							connected.set(true);
+							notifyRooms(true);
+						}
+					});
 				client.getServerManager().addObjectCreatedListener(new KWatchDogCreate());
-				client.getServerManager().addObjectDestroyedListener(new EventListener<>() {
-					@Override
-					public void onEvent(ObjectDestroyedEvent event) {
-						log.debug("Kurento::ObjectDestroyedEvent objectId {}, tags {}, source {}", event.getObjectId(), event.getTags(), event.getSource());
-					}
-				});
+				client.getServerManager().addObjectDestroyedListener(event ->
+					log.debug("Kurento::ObjectDestroyedEvent objectId {}, tags {}, source {}", event.getObjectId(), event.getTags(), event.getSource())
+				);
 			} catch (Exception e) {
+				connected.set(false);
+				clean();
 				log.warn("Fail to create Kurento client, will re-try in {} ms", checkTimeout);
-				kmsRecheckScheduler.schedule(check, checkTimeout, MILLISECONDS);
 			}
 		};
-		check.run();
+		kmsRecheckScheduler.scheduleAtFixedRate(check, 0L, checkTimeout, MILLISECONDS);
 	}
 
+	@PreDestroy
 	public void destroy() {
+		clean();
+		kmsRecheckScheduler.shutdownNow();
+	}
+
+	private void clean() {
 		if (client != null) {
-			kuid = randomUUID().toString(); // will be changed to prevent double events
-			client.destroy();
-			for (Entry<Long, KRoom> e : rooms.entrySet()) {
-				e.getValue().close();
+			try {
+				KurentoClient copy = client;
+				client = null;
+				if (copy != null && !copy.isClosed()) {
+					log.debug("Client will destroyed ...");
+					copy.destroy();
+					log.debug(".... Client is destroyed");
+				}
+				testProcessor.destroy();
+				streamProcessor.destroy();
+				for (Entry<Long, KRoom> e : rooms.entrySet()) {
+					e.getValue().close();
+				}
+				rooms.clear();
+			} catch (Exception e) {
+				log.error("Unexpected error while clean-up", e);
 			}
-			testProcessor.destroy();
-			streamProcessor.destroy();
-			rooms.clear();
-			client = null;
 		}
 	}
 
@@ -216,7 +268,7 @@ public class KurentoHandler {
 	}
 
 	public void remove(IWsClient c) {
-		if (!isConnected() ||c == null) {
+		if (!isConnected() || c == null) {
 			return;
 		}
 		if (!(c instanceof Client)) {
@@ -271,11 +323,11 @@ public class KurentoHandler {
 		return r;
 	}
 
-	public JSONArray getTurnServers() {
-		return getTurnServers(false);
+	public JSONArray getTurnServers(Client c) {
+		return getTurnServers(c, false);
 	}
 
-	JSONArray getTurnServers(final boolean test) {
+	JSONArray getTurnServers(Client c, final boolean test) {
 		JSONArray arr = new JSONArray();
 		if (!Strings.isEmpty(turnUrl)) {
 			try {
@@ -285,7 +337,10 @@ public class KurentoHandler {
 					mac.init(new SecretKeySpec(turnSecret.getBytes(), HMAC_SHA1_ALGORITHM));
 					StringBuilder user = new StringBuilder()
 							.append((test ? 60 : turnTtl * 60) + System.currentTimeMillis() / 1000L);
-					if (!Strings.isEmpty(turnUser)) {
+					final String uid = c == null ? null : c.getUid();
+					if (!Strings.isEmpty(uid)) {
+						user.append(':').append(uid);
+					} else if (!Strings.isEmpty(turnUser)) {
 						user.append(':').append(turnUser);
 					}
 					turn.put("username", user)
@@ -294,9 +349,18 @@ public class KurentoHandler {
 					turn.put("username", turnUser)
 						.put("credential", turnSecret);
 				}
-				final String fturnUrl = "turn:" + turnUrl;
-				turn.put("url", fturnUrl); // old-school
-				turn.put("urls", fturnUrl);
+
+				JSONArray urls = new JSONArray();
+				final String[] turnUrls = turnUrl.split(",");
+				for (String url : turnUrls) {
+					if (url.startsWith("stun:") || url.startsWith("stuns:") || url.startsWith("turn:") || url.startsWith("turns:")) {
+						urls.put(url);
+					} else {
+						urls.put("turn:" + url);
+					}
+				}
+				turn.put("urls", urls);
+
 				arr.put(turn);
 			} catch (NoSuchAlgorithmException|InvalidKeyException e) {
 				log.error("Unexpected error while creating turn", e);
@@ -355,46 +419,6 @@ public class KurentoHandler {
 
 	static int getFlowoutTimeout() {
 		return FLOWOUT_TIMEOUT_SEC;
-	}
-
-	private class KConnectionListener implements KurentoConnectionListener {
-		final String lkuid;
-
-		private KConnectionListener(final String lkuid) {
-			this.lkuid = lkuid;
-		}
-
-		private void notifyRooms() {
-			WebSocketHelper.sendServer(new TextRoomMessage(null, new User(), RoomMessage.Type.KURENTO_STATUS, new JSONObject().put("connected", isConnected()).toString()));
-		}
-
-		@Override
-		public void reconnected(boolean sameServer) {
-			log.error("Kurento reconnected ? {}, this shouldn't happen", sameServer);
-		}
-
-		@Override
-		public void disconnected() {
-			if (lkuid.equals(kuid)) {
-				log.warn("Disconnected, will re-try in {} ms", checkTimeout);
-				connected = false;
-				notifyRooms();
-				destroy();
-				kmsRecheckScheduler.schedule(check, checkTimeout, MILLISECONDS);
-			}
-		}
-
-		@Override
-		public void connectionFailed() {
-			// this handled seems to be called multiple times
-		}
-
-		@Override
-		public void connected() {
-			log.info("Kurento connected");
-			connected = true;
-			notifyRooms();
-		}
 	}
 
 	private class KWatchDogCreate implements EventListener<ObjectCreatedEvent> {
